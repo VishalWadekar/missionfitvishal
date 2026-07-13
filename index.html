@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>100 Days of Discipline — Weight-Loss Challenge</title>
+<meta name="description" content="Documenting every single day of a 100-day weight-loss discipline challenge — daily habits, streak progress, and the numbers behind it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">100<span class="accent">DAYS</span></div>
+  <nav class="nav-links">
+    <a href="https://www.instagram.com/missionfitvishal/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://youtube.com/@missionfitvishal" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.facebook.com/share/1D6QmFfDuA/" target="_blank" rel="noopener">Facebook</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-byline">
+      <img class="avatar" src="assets/profile.jpg" alt="Vishal Wadekar">
+      <p class="eyebrow">Weight-loss discipline challenge</p>
+    </div>
+    <h1 class="headline">100 days. No excuses.<br>Just showing up.</h1>
+    <p class="subtext">Documenting every single day of my weight-loss journey — the walks, the pushups, the water, the streak.</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="stat-day">0<span class="stat-suffix">/100</span></div>
+        <div class="stat-label">Day streak</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-followers">0</div>
+        <div class="stat-label">Instagram followers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-views">0</div>
+        <div class="stat-label">Reel views · last 30 days</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="streak">
+    <div class="streak-header">
+      <div class="streak-title">The streak</div>
+      <div class="streak-pct" id="streak-pct">0% complete</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="streak-grid" id="streak-grid"></div>
+  </section>
+
+  <section class="weight">
+    <div class="weight-header">
+      <div class="weight-title">Weight progress</div>
+      <div class="weight-pct" id="weight-pct">0% to goal</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="weight-fill"></div>
+    </div>
+    <div class="weight-stats">
+      <div class="weight-stat">
+        <div class="weight-value" id="weight-start">0 kg</div>
+        <div class="weight-label" id="weight-start-label">Start</div>
+      </div>
+      <div class="weight-stat">
+        <div class="weight-value" id="weight-current">0 kg</div>
+        <div class="weight-label" id="weight-current-label">Latest</div>
+      </div>
+      <div class="weight-stat">
+        <div class="weight-value" id="weight-target">0 kg</div>
+        <div class="weight-label">Target</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="checklist">
+    <div class="checklist-header">
+      <h2 class="checklist-title">Today's habits — Day <span id="checklist-day">1</span></h2>
+      <div class="checklist-count" id="checklist-count">0/8 done</div>
+    </div>
+    <div class="habit-grid" id="habit-grid"></div>
+    <p class="checklist-note">Saved in your browser · <span class="red">red</span> = attempted but target not fully met.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-tagline">Follow the journey, every day.</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/missionfitvishal/" target="_blank" rel="noopener">IG @missionfitvishal</a>
+    <a href="https://youtube.com/@missionfitvishal" target="_blank" rel="noopener">YT @missionfitvishal</a>
+    <a href="https://www.facebook.com/share/1D6QmFfDuA/" target="_blank" rel="noopener">Facebook</a>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
