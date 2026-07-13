@@ -1,19 +1,4 @@
 (function () {
-  // Edit these values to keep the challenge up to date.
-  var CONFIG = {
-    challengeStartDate: '2026-06-01', // Day 1 of the challenge
-    igFollowers: 1450,
-    igViews: 369000, // reel views, last 30 days
-    weight: {
-      start: 92.1,
-      startLabel: 'Start · Jun 1',
-      current: 86.35,
-      currentLabel: 'Latest · Jun 30',
-      targetMin: 76,
-      targetMax: 78
-    }
-  };
-
   var HABIT_DEFS = [
     { name: 'Daily walk', target: 6, unit: 'km', step: 0.5 },
     { name: 'Pushups', target: 50, unit: 'reps', step: 5 },
@@ -25,8 +10,8 @@
     { name: 'Squats', target: 10, unit: 'reps', step: 5 }
   ];
 
-  function computeDay() {
-    var start = new Date(CONFIG.challengeStartDate + 'T00:00:00');
+  function computeDay(startDate) {
+    var start = new Date(startDate + 'T00:00:00');
     var today = new Date();
     var startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
     var todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -35,33 +20,18 @@
     return Math.min(100, Math.max(1, day));
   }
 
-  var DAY = computeDay();
-  var STORAGE_KEY = 'hundo-habits-v3-d' + DAY;
-
-  function loadHabits() {
-    try {
-      var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (Array.isArray(saved) && saved.length === HABIT_DEFS.length) return saved;
-    } catch (e) {}
-    return HABIT_DEFS.map(function () { return 0; });
+  function renderStats(day) {
+    document.getElementById('streak-pct').textContent = day + '% complete';
+    document.getElementById('progress-fill').style.width = day + '%';
+    document.getElementById('checklist-day').textContent = day;
   }
 
-  function saveHabits(values) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
-    } catch (e) {}
+  function renderSugarFree(streak) {
+    var el = document.getElementById('stat-sugarfree');
+    el.textContent = (streak === null || streak === undefined) ? '—' : streak;
   }
 
-  var habitValues = loadHabits();
-
-  function renderStats() {
-    document.getElementById('streak-pct').textContent = DAY + '% complete';
-    document.getElementById('progress-fill').style.width = DAY + '%';
-    document.getElementById('checklist-day').textContent = DAY;
-  }
-
-  function renderWeight() {
-    var w = CONFIG.weight;
+  function renderWeight(w) {
     var targetMid = (w.targetMin + w.targetMax) / 2;
     var totalToLose = w.start - targetMid;
     var lostSoFar = w.start - w.current;
@@ -77,13 +47,13 @@
     document.getElementById('weight-target').textContent = w.targetMin + '–' + w.targetMax + ' kg';
   }
 
-  function renderStreakGrid() {
+  function renderStreakGrid(day) {
     var grid = document.getElementById('streak-grid');
     var frag = document.createDocumentFragment();
     for (var i = 0; i < 100; i++) {
       var n = i + 1;
-      var past = i < DAY - 1;
-      var current = i === DAY - 1;
+      var past = i < day - 1;
+      var current = i === day - 1;
       var sq = document.createElement('div');
       sq.className = 'streak-sq ' + (current ? 'current' : past ? 'past' : 'future');
       sq.title = 'Day ' + n;
@@ -93,25 +63,7 @@
     grid.appendChild(frag);
   }
 
-  function toggleHabit(i) {
-    var def = HABIT_DEFS[i];
-    var next = habitValues.slice();
-    next[i] = (habitValues[i] || 0) >= def.target ? 0 : def.target;
-    habitValues = next;
-    saveHabits(next);
-    renderHabits();
-  }
-
-  function onHabitInput(i, e) {
-    var n = parseFloat(e.target.value);
-    var next = habitValues.slice();
-    next[i] = isNaN(n) || n < 0 ? 0 : n;
-    habitValues = next;
-    saveHabits(next);
-    renderHabits();
-  }
-
-  function renderHabits() {
+  function renderHabits(habitValues) {
     var container = document.getElementById('habit-grid');
     container.innerHTML = '';
     var doneCount = 0;
@@ -128,21 +80,14 @@
       var check = document.createElement('div');
       check.className = 'habit-check';
       check.textContent = full ? '✓' : partial ? '!' : '';
-      check.addEventListener('click', function () { toggleHabit(i); });
 
       var name = document.createElement('div');
       name.className = 'habit-name';
       name.textContent = def.name;
-      name.addEventListener('click', function () { toggleHabit(i); });
 
-      var input = document.createElement('input');
-      input.type = 'number';
-      input.className = 'habit-input';
-      input.min = '0';
-      input.step = String(def.step);
-      input.value = value;
-      input.addEventListener('click', function (e) { e.stopPropagation(); });
-      input.addEventListener('change', function (e) { onHabitInput(i, e); });
+      var valueEl = document.createElement('div');
+      valueEl.className = 'habit-value';
+      valueEl.textContent = value;
 
       var target = document.createElement('div');
       target.className = 'habit-target';
@@ -150,7 +95,7 @@
 
       row.appendChild(check);
       row.appendChild(name);
-      row.appendChild(input);
+      row.appendChild(valueEl);
       row.appendChild(target);
       container.appendChild(row);
     });
@@ -158,32 +103,42 @@
     document.getElementById('checklist-count').textContent = doneCount + '/' + HABIT_DEFS.length + ' done';
   }
 
-  function animateHeroNumbers() {
+  function animateHeroNumbers(day, igFollowers, igViews, igViewsSuffix) {
     var dayEl = document.getElementById('stat-day');
     var dayText = dayEl.firstChild;
     var followersEl = document.getElementById('stat-followers');
     var viewsEl = document.getElementById('stat-views');
+    var suffix = igViewsSuffix || '';
     var t0 = performance.now();
     var dur = 1800;
 
     function tick(now) {
       var p = Math.min(1, (now - t0) / dur);
       var e = 1 - Math.pow(1 - p, 3);
-      dayText.textContent = Math.round(DAY * e);
-      followersEl.textContent = Math.round(CONFIG.igFollowers * e).toLocaleString('en-US');
-      viewsEl.textContent = Math.round(CONFIG.igViews * e).toLocaleString('en-US');
+      dayText.textContent = Math.round(day * e);
+      followersEl.textContent = Math.round(igFollowers * e).toLocaleString('en-US');
+      viewsEl.textContent = Math.round(igViews * e).toLocaleString('en-US') + suffix;
       if (p < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   }
 
-  function init() {
-    renderStats();
-    renderStreakGrid();
-    renderWeight();
-    renderHabits();
-    animateHeroNumbers();
+  function init(data) {
+    var day = computeDay(data.challengeStartDate);
+    renderStats(day);
+    renderSugarFree(data.sugarFreeStreak);
+    renderStreakGrid(day);
+    renderWeight(data.weight);
+    renderHabits(data.habitValues || []);
+    animateHeroNumbers(day, data.igFollowers, data.igViews, data.igViewsSuffix);
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('data.json')
+      .then(function (res) { return res.json(); })
+      .then(init)
+      .catch(function (err) {
+        console.error('Failed to load data.json', err);
+      });
+  });
 })();

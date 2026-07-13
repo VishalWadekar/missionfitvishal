@@ -1,0 +1,16 @@
+{
+  "challengeStartDate": "2026-06-01",
+  "igFollowers": 1616,
+  "igViews": 400000,
+  "igViewsSuffix": "+",
+  "sugarFreeStreak": 43,
+  "weight": {
+    "start": 92.1,
+    "startLabel": "Start · Jun 1",
+    "current": 86.35,
+    "currentLabel": "Latest · Jun 30",
+    "targetMin": 76,
+    "targetMax": 78
+  },
+  "habitValues": [0, 0, 0, 0, 0, 0, 0, 0]
+}
